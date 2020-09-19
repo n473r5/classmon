@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% include "components/navbar.html" %}
+{% block content %}
+<h1>Administrator page</h1>
+<h2>Users table</h2>
+<table class="table table-striped">
+	<thead>
+		<th scope="col">id</th>
+		<th scope="col">username</th>
+		<th scope="col">is_admin</th>
+		<th scope="col">data_sources</th>
+	</thead>
+	<tbody>
+		{% for user in tables['users'] %}
+		<tr>
+			<th scope="row">{{ user.id }}</th>
+			<td>{{ user.username }}</td>
+			<td>{{ user.is_admin }}</td>
+			<td>{{ user.data_sources }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

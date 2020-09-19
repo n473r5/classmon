@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% include "components/navbar.html" %}
+{% block content %}
+<h1>Data explorer</h1>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link active" id="query-tab" data-toggle="tab" href="#query" role="tab">Query</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="raw-tab" data-toggle="tab" href="#raw" role="tab">Raw</a>
+	</li>
+</ul>
+<div class="tab-content" id="myTabContent">
+	<div class="tab-pane fade show active" id="query" role="tabpanel">
+		<div class="row">
+			<div class="col">
+				<h2>SQL Query</h2>
+				<div class="w-100" style="height: 15rem;" id="editor">SELECT * FROM users;</div>
+				<button class="btn btn-sm btn-primary my-2" id="run">Run</button>
+				<h2>Results</h2>
+				<p id="no-results-label">No query results yet</p>
+				<p id="results-label" style="display: none;"></p>
+				<table class="table table-striped" id="results">
+					<tbody>
+
+					</tbody>
+				</table>
+			</div>
+			<!--
+			<div class="col-2">
+				<h2>History</h2>
+			</div>
+			-->
+		</div>
+	</div>
+	<div class="tab-pane fade" id="raw" role="tabpanel">
+		<h2>Raw view</h2>
+	</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"
+	integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q=="
+	crossorigin="anonymous"></script>
+<script>
+	var editor = ace.edit("editor", {
+		"theme": "ace/theme/sqlserver",
+		"mode": "ace/mode/sql",
+		"showPrintMargin": false
+	});
+
+	$("#run").click(() => {
+		let start = performance.now();
+
+		$.ajax({
+			method: "POST",
+			url: "/api/query",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({"query": editor.getValue()}),
+			success: (data) => {
+				$("#no-results-label").hide();
+				$("#results-label").show();
+				$("#results tbody").empty();
+
+				let dt = Math.round(performance.now() - start);
+				$("#results-label").html(`${data["results"].length} rows returned in ${dt}ms.`);
+				data["results"].forEach((row) => {
+					console.log("ok");
+					let rowhtml = "<tr>";
+					row.forEach((column) => {
+						rowhtml += `<td>${column}</td>`;
+					});
+					rowhtml += "</tr>";
+					$("#results tbody").append(rowhtml);
+				});
+			}
+		});
+	});
+</script>
+{% endblock %}

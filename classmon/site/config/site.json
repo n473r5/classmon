@@ -1,0 +1,6 @@
+{
+	"SECRET_KEY": "secret",
+	"SQLALCHEMY_DATABASE_URI": "mysql+mysqlconnector://root:password@localhost:3306/classmon",
+	"SQLALCHEMY_TRACK_MODIFICATIONS": true,
+	"ADMINISTRATORS": ["ntresham", "lmartin", "qhao"]
+}

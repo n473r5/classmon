@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center my-4">
+	<h1><a class="text-dark" href="/">ClassMon</a></h1>
+</div>
+<div class="d-flex justify-content-center">
+	<div class="card" style="width: 20rem;">
+		<div class="card-body">
+			<h2>{{ form.title }}</h2>
+			<form action="" method="post" novalidate>
+				{{ form.hidden_tag() }}
+				{% for field in form %}
+				{% if field.id != "csrf_token" %}
+				<div class="form-field mt-4">
+					{% if field.type != "SubmitField"%}
+					{{ field.label() }}
+					{{ field(class="w-100 form-control") }}
+					{% else %}
+					{{ field(class="btn btn-primary") }}
+					{% endif %}
+					{% for error in field.errors %}
+					<span class="text-danger">{{ error }}</span>
+					{% endfor %}
+				</div>
+				{% endif %}
+				{% endfor %}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
